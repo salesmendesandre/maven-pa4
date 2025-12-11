@@ -1,0 +1,20 @@
+-------------------------------------------------------------------------------
+Test set: com.salesmendes.PersonaTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.023 s <<< FAILURE! -- in com.salesmendes.PersonaTest
+com.salesmendes.PersonaTest.fromString_ShouldThrowException_WhenInputIsNull -- Time elapsed: 0.004 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Unexpected exception type thrown, expected: <java.lang.IllegalArgumentException> but was: <java.lang.NullPointerException>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:67)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3111)
+	at com.salesmendes.PersonaTest.fromString_ShouldThrowException_WhenInputIsNull(PersonaTest.java:28)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+Caused by: java.lang.NullPointerException: Cannot invoke "String.split(String)" because "cadena" is null
+	at com.salesmendes.Persona.factory(Persona.java:27)
+	at com.salesmendes.PersonaTest.lambda$0(PersonaTest.java:28)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:53)
+	... 6 more
+

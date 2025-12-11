@@ -1,0 +1,89 @@
+# ============================================================================
+# GITHUB ACTION: Generador Automático de Documentación JavaDoc
+# ============================================================================
+# Este workflow genera la documentación JavaDoc de tu proyecto Maven
+# y la publica en la carpeta /docs de tu repositorio.
+#
+# REQUISITOS:
+#   - Proyecto Maven con pom.xml válido
+#   - Plugin maven-javadoc-plugin configurado en pom.xml
+#
+# CONFIGURACIÓN:
+#   - Cambia PROYECTO_MAVEN por el nombre de tu carpeta de proyecto
+#
+# USO:
+#   - Se ejecuta automáticamente en cada push a main/master
+#   - También se puede ejecutar manualmente desde Actions > Run workflow
+# ============================================================================
+
+name: Generar JavaDoc
+
+# ============================================================================
+# VARIABLES DE ENTORNO
+# ============================================================================
+env:
+  # Nombre de la carpeta donde está tu proyecto Maven
+  # CAMBIA ESTO si tu carpeta tiene otro nombre
+  PROYECTO_MAVEN: demo
+
+# ============================================================================
+# TRIGGERS (¿Cuándo se ejecuta?)
+# ============================================================================
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+# ============================================================================
+# JOBS (Tareas a ejecutar)
+# ============================================================================
+jobs:
+  build-javadoc:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+
+    steps:
+      # ------------------------------------------------------------------
+      # PASO 1: Clonar el repositorio
+      # ------------------------------------------------------------------
+      - name: 📥 Checkout del repositorio
+        uses: actions/checkout@v4
+
+      # ------------------------------------------------------------------
+      # PASO 2: Configurar Java
+      # ------------------------------------------------------------------
+      - name: ☕ Configurar JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      # ------------------------------------------------------------------
+      # PASO 3: Generar JavaDoc
+      # ------------------------------------------------------------------
+      # Entra a la carpeta del proyecto y ejecuta Maven
+      - name: 📝 Generar documentación JavaDoc
+        run: mvn javadoc:javadoc
+        working-directory: ${{ env.PROYECTO_MAVEN }}
+
+      # ------------------------------------------------------------------
+      # PASO 4: Copiar documentación a /docs en la raíz del repo
+      # ------------------------------------------------------------------
+      - name: 📁 Copiar JavaDoc a carpeta docs/
+        run: |
+          rm -rf docs
+          cp -r ${{ env.PROYECTO_MAVEN }}/target/site/apidocs docs
+
+      # ------------------------------------------------------------------
+      # PASO 5: Subir cambios al repositorio
+      # ------------------------------------------------------------------
+      - name: 🚀 Commit y Push de la documentación
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add docs/
+          git diff --staged --quiet || git commit -m "📚 Actualizar documentación JavaDoc"
+          git push
